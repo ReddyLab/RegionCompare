@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+import argparse
+
+from RegionCompare import run
+
+
+def getArgs():
+    parser = argparse.ArgumentParser("regioncompare")
+
+    commands = parser.add_mutually_exclusive_group(required=True)
+    commands.add_argument('-b', '--bigwigs', help="bigwig files.", nargs=2, metavar='BIGWIG')
+    commands.add_argument('--hdfs', help="HDF5 files.", nargs=2, metavar='HDF5')
+
+    parser.add_argument('-r', '--regions', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
+    parser.add_argument('-o', '--output', help="Output file. Diff results will be output here. default = stdout", required=False, type=argparse.FileType('w'))
+    parser.add_argument('--blacklist', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100", required=False)
+    parser.add_argument('-c', '--chromo', help="The chromosome the hdf5 files are for. Required when using the --hdfs option.", required=False)
+    parser.add_argument('--offset', help="An offset to apply to regions to use with the --hdfs option. Required when using the --hdfs option.", required=False, default=0, type=int)
+
+    return parser
+
+def main():
+    args = getArgs().parse_args()
+    run(args)
+
+if __name__ == '__main__':
+    main()
